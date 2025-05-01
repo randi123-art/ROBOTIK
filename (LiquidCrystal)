@@ -1,0 +1,26 @@
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+// Inisialisasi LCD dengan alamat I2C 0x27 dan ukuran 16x2
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+void setup() {
+  Wire.begin();          // Inisialisasi I2C
+  lcd.init();            // Inisialisasi LCD (gunakan .init() bukan .begin() untuk library terbaru)
+  lcd.backlight();       // Nyalakan backlight LCD
+}
+
+void loop() {
+  lcd.clear();           
+  lcd.setCursor(0, 0);   
+  lcd.print("Hello World");     // Teks baris pertama
+
+  lcd.setCursor(0, 1);   
+  lcd.print("RUBERO");          // Teks baris kedua
+
+  delay(1000);           
+  lcd.noBacklight();     // Matikan backlight
+  delay(250);            
+  lcd.backlight();       // Nyalakan kembali backlight
+  delay(1000);           
+}
