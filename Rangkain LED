@@ -1,0 +1,19 @@
+# Rangkain-LED
+# Proyek Kontrol LED dengan Arduino
+
+Proyek ini menunjukkan cara sederhana menyalakan dan mematikan LED menggunakan board *Arduino UNO*. Cocok untuk pemula yang baru belajar Arduino.
+
+## Tujuan
+- Menyalakan LED dengan sinyal digital dari Arduino.
+- Memahami fungsi pinMode(), digitalWrite(), dan delay().
+
+## Komponen yang Dibutuhkan
+- 1x Arduino UNO
+- 1x LED
+- 1x Resistor 220Ω (ohm)
+- Kabel jumper
+- Breadboard (opsional)
+
+## Rangkaian
+- Sambungkan *kaki panjang (anoda)* LED ke *pin digital 13* Arduino melalui resistor 220Ω.
+- Sambungkan *kaki pendek (katoda)* LED ke *GND* Arduino.
