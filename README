@@ -1,1 +1,10 @@
+void setup() {
+  pinMode(13, OUTPUT); // Set pin 13 sebagai output
+}
 
+void loop() {
+  digitalWrite(13, HIGH); // Nyalakan LED
+  delay(1000);            // Tunggu 1 detik
+  digitalWrite(13, LOW);  // Matikan LED
+  delay(1000);            // Tunggu 1 detik
+}
