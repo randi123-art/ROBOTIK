@@ -1,45 +1,87 @@
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
 #include <Servo.h>
 
-// Inisialisasi pin
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+Servo myServo;
+
 const int trigPin = 9;
 const int echoPin = 10;
-const int servoPin = 6;
-
-Servo servo;
+const int buzzerPin = 6;
+const int servoPin = 11;
+long duration;
+float distance;
+bool lastDetected = false;
 
 void setup() {
+  lcd.init();
+  lcd.backlight();
+  lcd.setCursor(0, 0);
+  lcd.print("   Sistem Siap   ");
+  delay(1500);
+  lcd.clear();
+
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
-  servo.attach(servoPin);
-  servo.write(0); // posisi tutup tertutup
-  Serial.begin(9600);
+  pinMode(buzzerPin, OUTPUT);
+
+  myServo.attach(servoPin);
+  myServo.write(0);
 }
 
 void loop() {
-  long duration;
-  int distance;
-
-  // Kirim sinyal ultrasonik
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
 
-  // Baca waktu pantulan
-  duration = pulseIn(echoPin, HIGH);
+  duration = pulseIn(echoPin, HIGH, 30000);
   distance = duration * 0.034 / 2;
 
-  Serial.print("Jarak: ");
-  Serial.print(distance);
-  Serial.println(" cm");
+  bool detected = (distance > 0 && distance < 15.0);
 
-  if (distance <= 15) {
-    servo.write(90); // buka tutup
-    delay(3000);     // tunggu 3 detik
-  } else {
-    servo.write(0);  // tutup kembali
+  if (detected != lastDetected) {
+    lcd.clear();
+    if (detected) {
+      lcd.setCursor(0, 0);
+      lcd.print("Objek terdeteksi");
+      lcd.setCursor(0, 1);
+      lcd.print("Di depan sensor ");
+    } else {
+      lcd.setCursor(0, 0);
+      lcd.print("Tidak ada objek ");
+      lcd.setCursor(0, 1);
+      lcd.print("di depan sensor ");
+    }
+    lastDetected = detected;
   }
 
-  delay(300); // jeda pembacaan berikutnya
+  if (distance < 5) {
+    myServo.write(90);
+    // Bip bip cepat
+    for (int i = 0; i < 2; i++) {
+      tone(buzzerPin, 1000);
+      delay(100);
+      noTone(buzzerPin);
+      delay(100);
+    }
+  } else if (distance >= 5 && distance < 10) {
+    myServo.write(90);
+    // Bip lambat
+    tone(buzzerPin, 700);
+    delay(200);
+    noTone(buzzerPin);
+  } else if (distance >= 10 && distance < 15) {
+    myServo.write(90);
+    // Bip pendek
+    tone(buzzerPin, 400);
+    delay(100);
+    noTone(buzzerPin);
+  } else {
+    myServo.write(0);
+    noTone(buzzerPin);
+  }
+
+  delay(200); // jeda antar pembacaan
 }
